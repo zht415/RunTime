@@ -22,6 +22,89 @@ int main(int argc, char * argv[]) {
         
         Class cls =  myClass.class;
         
+        /*
+         
+         // 获取类的类名
+         const char * class_getName ( Class cls );
+         
+         // 获取类的父类
+         Class class_getSuperclass ( Class cls );
+         
+         // 判断给定的Class是否是一个元类
+         BOOL class_isMetaClass ( Class cls );
+         
+         // 获取实例大小
+         size_t class_getInstanceSize ( Class cls );
+         
+         // 获取类中指定名称实例成员变量的信息
+         Ivar class_getInstanceVariable ( Class cls, const char *name );
+         
+         // 获取类成员变量的信息
+         Ivar class_getClassVariable ( Class cls, const char *name );
+         
+         // 添加成员变量
+         BOOL class_addIvar ( Class cls, const char *name, size_t size, uint8_t alignment, const char *types );
+         
+         // 获取整个成员变量列表
+         Ivar * class_copyIvarList ( Class cls, unsigned int *outCount );
+         
+         
+         // 获取指定的属性
+         objc_property_t class_getProperty ( Class cls, const char *name );
+         
+         // 获取属性列表
+         objc_property_t * class_copyPropertyList ( Class cls, unsigned int *outCount );
+         
+         // 为类添加属性
+         BOOL class_addProperty ( Class cls, const char *name, const objc_property_attribute_t *attributes, unsigned int attributeCount );
+         
+         // 替换类的属性
+         void class_replaceProperty ( Class cls, const char *name, const objc_property_attribute_t *attributes, unsigned int attributeCount );
+         
+         
+         // 添加方法
+         BOOL class_addMethod ( Class cls, SEL name, IMP imp, const char *types );
+         
+         // 获取实例方法
+         Method class_getInstanceMethod ( Class cls, SEL name );
+         
+         // 获取类方法
+         Method class_getClassMethod ( Class cls, SEL name );
+         
+         // 获取所有方法的数组
+         Method * class_copyMethodList ( Class cls, unsigned int *outCount );
+         
+         // 替代方法的实现
+         IMP class_replaceMethod ( Class cls, SEL name, IMP imp, const char *types );
+         
+         // 返回方法的具体实现
+         IMP class_getMethodImplementation ( Class cls, SEL name );
+         IMP class_getMethodImplementation_stret ( Class cls, SEL name );
+         
+         // 类实例是否响应指定的selector
+         BOOL class_respondsToSelector ( Class cls, SEL
+         
+         // 添加协议
+         BOOL class_addProtocol ( Class cls, Protocol *protocol );
+         
+         // 返回类是否实现指定的协议
+         BOOL class_conformsToProtocol ( Class cls, Protocol *protocol );
+         
+         // 返回类实现的协议列表
+         Protocol * class_copyProtocolList ( Class cls, unsigned int *outCount );
+         
+         class_conformsToProtocol函数可以使用NSObject类的conformsToProtocol:方法来替代。
+         
+         class_copyProtocolList函数返回的是一个数组，在使用后我们需要使用free()手动释放。
+         
+         // 获取版本号
+         int class_getVersion ( Class cls );
+         
+         // 设置版本号
+         void class_setVersion ( Class cls, int version );
+         
+         
+         */
         //类名
         NSLog(@"myClass:%@ cls:%@",myClass,cls);
         NSLog(@"class name:%s",class_getName(cls));
