@@ -17,5 +17,4 @@
 -(void)method2;
 +(void)classMethod1;
 
-
 @end
