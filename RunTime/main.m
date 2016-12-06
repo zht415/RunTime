@@ -365,6 +365,50 @@ int main(int argc, char * argv[]) {
         //OBJC_ASSOCIATION_COPY
         //当宿主对象被释放时，会根据指定的内存管理策略来处理关联对象。如果指定的策略是assign，则宿主释放时，关联对象不会被释放；而如果指定的是retain或者是copy，则宿主释放时，关联对象会被释放。我们甚至可以选择是否是自动retain/copy。
         
+        //成员变量、属性的操作方法
+        
+        //成员变量  成员变量操作包含以下函数：
+        // 获取成员变量名
+        const char * ivar_getName ( Ivar v );
+        
+        // 获取成员变量类型编码
+        const char * ivar_getTypeEncoding ( Ivar v );
+        
+        // 获取成员变量的偏移量
+        ptrdiff_t ivar_getOffset ( Ivar v );
+        
+        //关联对象
+        // 设置关联对象
+        void objc_setAssociatedObject ( id object, const void *key, id value, objc_AssociationPolicy policy );
+        
+        // 获取关联对象
+        id objc_getAssociatedObject ( id object, const void *key );
+        
+        // 移除关联对象
+        void objc_removeAssociatedObjects ( id object );
+        //关联对象及相关实例已经在前面讨论过了，在此不再重复。
+        
+        //属性
+        // 获取属性名
+        const char * property_getName ( objc_property_t property );
+        
+        // 获取属性特性描述字符串
+        const char * property_getAttributes ( objc_property_t property );
+        
+        // 获取属性中指定的特性
+        char * property_copyAttributeValue ( objc_property_t property, const char *attributeName );
+        //property_copyAttributeValue函数，返回的char *在使用完后需要调用free()释放。
+        
+        // 获取属性的特性列表
+        objc_property_attribute_t * property_copyAttributeList1 ( objc_property_t property, unsigned int *outCount );
+        //property_copyAttributeList函数，返回值在使用完后需要调用free()释放。
+        
+        
+        //方法和消息
+        //SEL又叫选择器，是表示一个方法的selector的指针，其定义如下:
+        typedef struct objc_selector *SEL;
+        
+        
         
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
