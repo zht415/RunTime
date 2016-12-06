@@ -293,9 +293,78 @@ int main(int argc, char * argv[]) {
         Class objc_lookUpClass ( const char *name );
         Class objc_getClass ( const char *name );
         Class objc_getRequiredClass ( const char *name );
+        /*
+         获取类定义的方法有三个：objc_lookUpClass, objc_getClass和objc_getRequiredClass。如果类在运行时未注册，则objc_lookUpClass会返回nil，而objc_getClass会调用类处理回调，并再次确认类是否注册，如果确认未注册，再返回nil。而objc_getRequiredClass函数的操作与objc_getClass相同，只不过如果没有找到类，则会杀死进程。
+        */
         
         // 返回指定类的元类
         Class objc_getMetaClass ( const char *name );
+        
+        /*
+         objc_getMetaClass函数：如果指定的类没有注册，则该函数会调用类处理回调，并再次确认类是否注册，如果确认未注册，再返回nil。不过，每个类定义都必须有一个有效的元类定义，所以这个函数总是会返回一个元类定义，不管它是否有效
+         */
+        
+        //objc_getClassList函数：获取已注册的类定义的列表。我们不能假设从该函数中获取的类对象是继承自NSObject体系的，所以在这些类上调用方法是，都应该先检测一下这个方法是否在这个类中实现。
+        int numClasses;
+        Class *classes = NULL;
+        numClasses = objc_getClassList(NULL, 0);
+        if (numClasses>0) {
+            classes = malloc(sizeof(Class)*numClasses);
+            numClasses = objc_getClassList(classes, numClasses);
+            NSLog(@"number of classes:%d",numClasses);
+            
+            for(int i = 0 ;i<numClasses;i++){
+            
+                Class cls = classes[i];
+                NSLog(@"class name:%s",class_getName(cls));
+            }
+            free(classes);
+        }
+        
+        //类型编码(Type Encoding)
+        //作为对Runtime的补充，编译器将每个方法的返回值和参数类型编码为一个字符串，并将其与方法的selector关联在一起。这种编码方案在其它情况下也是非常有用的，因此我们可以使用@encode编译器指令来获取它。当给定一个类型时，@encode返回这个类型的字符串编码。这些类型可以是诸如int、指针这样的基本类型，也可以是结构体、类等类型。事实上，任何可以作为sizeof()操作参数的类型都可以用于@encode()。
+        
+        //Objective-C不支持long double类型。@encode(long double)返回d，与double是一样的。
+        float a1[] = {1.0, 2.0, 3.0};
+        NSLog(@"array encoding type: %s", @encode(typeof(a1)));
+        //2014-10-28 11:44:54.731 RuntimeTest[942:50791] array encoding type: [3f]
+        
+        
+        //成员变量、属性
+        
+        //基础数据类型 Ivar
+        //Ivar是表示实例变量的类型，其实际是一个指向objc_ivar结构体的指针
+        typedef struct objc_ivar *Ivar;
+        
+        struct objc_ivar {
+            char *ivar_name                 OBJC2_UNAVAILABLE;  // 变量名
+            char *ivar_type                 OBJC2_UNAVAILABLE;  // 变量类型
+            int ivar_offset                 OBJC2_UNAVAILABLE;  // 基地址偏移字节
+            #ifdef __LP64__
+            int space                       OBJC2_UNAVAILABLE;
+            #endif
+            };
+        
+         //objc_property_t
+        //objc_property_t是表示Objective-C声明的属性的类型，其实际是指向objc_property结构体的指针，其定义如下
+        typedef struct objc_property *objc_property_t;
+        
+        //objc_property_attribute_t  objc_property_attribute_t定义了属性的特性(attribute)，它是一个结构体
+        
+        typedef struct {
+            const char *name;           // 特性名
+            const char *value;          // 特性值
+        } objc_property_attribute_t;
+        
+        //关联对象(Associated Object)
+        //我们可以把关联对象想象成一个Objective-C对象(如字典)，这个对象通过给定的key连接到类的一个实例上。不过由于使用的是C接口，所以key是一个void指针(const void *)。我们还需要指定一个内存管理策略，以告诉Runtime如何管理这个对象的内存。这个内存管理的策略可以由以下值指定
+        //OBJC_ASSOCIATION_ASSIGN
+        //OBJC_ASSOCIATION_RETAIN_NONATOMIC
+        //OBJC_ASSOCIATION_COPY_NONATOMIC
+        //OBJC_ASSOCIATION_RETAIN
+        //OBJC_ASSOCIATION_COPY
+        //当宿主对象被释放时，会根据指定的内存管理策略来处理关联对象。如果指定的策略是assign，则宿主释放时，关联对象不会被释放；而如果指定的是retain或者是copy，则宿主释放时，关联对象会被释放。我们甚至可以选择是否是自动retain/copy。
+        
         
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
